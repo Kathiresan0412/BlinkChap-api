@@ -108,15 +108,18 @@ SIMPLE_JWT = {
 }
 
 # Channels - Redis as channel layer
+# In containers/cloud (Railway, Docker, etc.) you MUST set REDIS_URL to a reachable Redis
+# (e.g. Redis plugin URL or redis://redis:6379). Default 127.0.0.1 only works on the same machine.
+_default_redis = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {'hosts': [os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')]},
+        'CONFIG': {'hosts': [_default_redis]},
     }
 }
 
 # Redis URL for matchmaking queue (can use same Redis)
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
+REDIS_URL = _default_redis
 
 # MongoDB for match logs (optional); MONGODB_URI or MONGO_URI
 MONGO_URI = os.environ.get('MONGODB_URI') or os.environ.get('MONGO_URI', 'mongodb://127.0.0.1:27017')
